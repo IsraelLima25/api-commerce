@@ -48,7 +48,7 @@ public class ProdutoControllerTest {
 	@Autowired
 	ProdutoRepository produtoRepository;
 	
-	List<Produto> produdosSalvo = new ArrayList<>();
+	List<Produto> produtosSalvo = new ArrayList<>();
 	
 	@BeforeEach
 	void setupInicial() {
@@ -57,7 +57,7 @@ public class ProdutoControllerTest {
 		Produto primeiroProduto = new Produto("Core I7", new BigDecimal(2500));
 		Produto segundoProduto = new Produto("Core I5", new BigDecimal(1500));
 		produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));
-		produdosSalvo.addAll(List.of(primeiroProduto, segundoProduto));
+		produtosSalvo.addAll(List.of(primeiroProduto, segundoProduto));
 	}
 	
 	@AfterEach
@@ -89,7 +89,7 @@ public class ProdutoControllerTest {
 	@DisplayName("Deve retornar produto por id existente e retornar status 200")
 	void buscarProdutoPorIdExistente() throws Exception {
 
-		Produto primeiroProduto = this.produdosSalvo.get(0);
+		Produto primeiroProduto = this.produtosSalvo.get(0);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos/{idProduto}", primeiroProduto.getId())
 				.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
@@ -149,7 +149,7 @@ public class ProdutoControllerTest {
 	@DisplayName("Deve deletar produto por id existente e retornar status 404")
 	void deletarProdutoPorIdExistente() throws Exception {
 		
-		Produto segundoProduto = this.produdosSalvo.get(1);
+		Produto segundoProduto = this.produtosSalvo.get(1);
 		
 		mockMvc.perform(MockMvcRequestBuilders.delete("/api/produtos/{idProduto}", segundoProduto.getId())
 				.contentType(MediaType.APPLICATION_JSON))
@@ -172,7 +172,38 @@ public class ProdutoControllerTest {
 				.andExpect(status().isNotFound());
 	}
 	
+	@Test
+	@DisplayName("Deve atualizar produto por id existente")
+	void atualizarProdutoPorIdExistente() throws Exception {
+		
+		// TODO create builder pattern and loadingDados
+		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
+		
+		Produto produto = this.produtosSalvo.get(1);
+		
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/produtos/{idProduto}", produto.getId())
+				.content(json(produtoFormRequest))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.descricao", is("Core I3")))
+				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(900.00).intValue())))
+				.andExpect(status().isOk());
+				
+	}
 	
+	@Test
+	@DisplayName("Não deve atualizar produto por id inexistente")
+	void atualizarProdutoPorIdInexistente() throws Exception {
+		
+		// TODO create builder pattern and loadingDados
+		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
+		
+		UUID idInvalido = UUID.randomUUID();
+		
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/produtos/{idProduto}", idInvalido)
+				.content(json(produtoFormRequest))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
 	
 	private String json(Object request) throws JsonProcessingException {
         return jsonMapper.writeValueAsString(request);

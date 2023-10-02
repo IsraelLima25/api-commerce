@@ -114,4 +114,23 @@ public class ProdutoController {
 		
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PutMapping("/{idProduto}")
+	@Transactional
+	public ResponseEntity<ProdutoViewDTO> atualizarProduto(@Valid @RequestBody ProdutoFormDTO formDTO, @PathVariable("idProduto") UUID idProduto){
+		
+		LOGGER.info("Buscando produto com id " + idProduto);
+		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
+		LOGGER.info("Produto com id " + idProduto + " encontrado. Iniciando atualizacao do registro");
+		return possivelProduto.map(produto -> {
+			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario());
+			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			LOGGER.info("Produto com id " + idProduto + " atualizado com sucesso");
+			return ResponseEntity.ok(produtoViewDTO);
+			
+		}).orElseThrow(() -> {
+			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
+		});
+	}
 }

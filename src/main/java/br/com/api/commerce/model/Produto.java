@@ -51,4 +51,9 @@ public class Produto {
 	public BigDecimal getPrecoUnitario() {
 		return precoUnitario;
 	}
+	
+	public void atualizarProduto(String descricao, BigDecimal precoUnitario) {
+		this.descricao = descricao;
+		this.precoUnitario = precoUnitario;
+	}
 }
