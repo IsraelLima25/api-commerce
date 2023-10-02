@@ -4,14 +4,18 @@ import br.com.api.commerce.form.dto.ProdutoFormDTO;
 import br.com.api.commerce.model.Produto;
 import br.com.api.commerce.repository.ProdutoRepository;
 import br.com.api.commerce.view.dto.ProdutoViewDTO;
+
+import br.com.api.commerce.exception.NotFoundException;
+
 import jakarta.validation.Valid;
 
 import java.net.URI;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,4 +50,18 @@ public class ProdutoController {
         return ResponseEntity.created(uri).body(produtoViewDTO);
     }
 	
+	@GetMapping("/{idProduto}")
+	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
+		
+		LOGGER.info("Buscando produto com id " + idProduto);
+		Optional<Produto> optionalProduto = produtoRepository.findById(idProduto);
+		
+		return optionalProduto.map(produto -> {
+			LOGGER.info("Produto com id " + idProduto + " encontrado com sucesso");
+			return ResponseEntity.ok(new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro()));
+		}).orElseThrow(() -> {
+			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
+		});
+	}
 }
