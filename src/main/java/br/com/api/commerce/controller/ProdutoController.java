@@ -10,6 +10,7 @@ import br.com.api.commerce.exception.NotFoundException;
 import jakarta.validation.Valid;
 
 import java.net.URI;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,13 +18,11 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -64,9 +63,9 @@ public class ProdutoController {
 	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
 		
 		LOGGER.info("Buscando produto com id " + idProduto);
-		Optional<Produto> optionalProduto = produtoRepository.findById(idProduto);
+		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
 		
-		return optionalProduto.map(produto -> {
+		return possivelProduto.map(produto -> {
 			LOGGER.info("Produto com id " + idProduto + " encontrado com sucesso");
 			return ResponseEntity.ok(new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro()));
 		}).orElseThrow(() -> {
@@ -95,5 +94,24 @@ public class ProdutoController {
 		
 		Page<ProdutoViewDTO> pageImplProdutos = new PageImpl<>(todosProdutosView, pageSorted, todosProdutosView.size());
 		return ResponseEntity.ok(pageImplProdutos);
+	}
+	
+	@DeleteMapping("/{idProduto}")
+	@Transactional
+	public ResponseEntity<Void> deletarProduto(@PathVariable("idProduto") UUID idProduto){
+		
+		LOGGER.info("Iniciando exclusao do produto " + idProduto);
+		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
+		
+		if(!possivelProduto.isPresent()) {
+			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
+		}
+		
+		Produto produto = possivelProduto.get();
+		produtoRepository.delete(produto);
+		LOGGER.info("Produto com id " + idProduto + ", excluido com sucesso");
+		
+		return ResponseEntity.noContent().build();
 	}
 }

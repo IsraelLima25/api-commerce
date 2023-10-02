@@ -86,7 +86,7 @@ public class ProdutoControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Deve retornar produto por id e retornar status 200")
+	@DisplayName("Deve retornar produto por id existente e retornar status 200")
 	void buscarProdutoPorIdExistente() throws Exception {
 
 		Produto primeiroProduto = this.produdosSalvo.get(0);
@@ -144,6 +144,34 @@ public class ProdutoControllerTest {
 				.andExpect(jsonPath("$.content[1].precoUnitario", is(new BigDecimal(2500).intValue())))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@DisplayName("Deve deletar produto por id existente e retornar status 404")
+	void deletarProdutoPorIdExistente() throws Exception {
+		
+		Produto segundoProduto = this.produdosSalvo.get(1);
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/produtos/{idProduto}", segundoProduto.getId())
+				.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isNoContent());
+	}
+	
+	
+	@Test
+	@DisplayName("Não deve deletar produto por id inexistente e retornar status 404")
+	void deletarProdutoPorIdInexistente() throws Exception {
+		
+		UUID idInvalido = UUID.randomUUID();
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/produtos/{idProduto}", idInvalido)
+				.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(jsonPath("$.campo", is("idProduto")))
+				.andExpect(jsonPath("$.mensagem", is("Nenhum produto encontrado")))
+				.andExpect(status().isNotFound());
+	}
+	
 	
 	
 	private String json(Object request) throws JsonProcessingException {
