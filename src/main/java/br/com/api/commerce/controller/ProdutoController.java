@@ -2,7 +2,7 @@ package br.com.api.commerce.controller;
 
 import br.com.api.commerce.form.dto.ProdutoFormDTO;
 import br.com.api.commerce.model.Produto;
-import br.com.api.commerce.repository.ProdutoRepository;
+import br.com.api.commerce.service.ProdutoService;
 import br.com.api.commerce.view.dto.ProdutoViewDTO;
 
 import br.com.api.commerce.exception.NotFoundException;
@@ -10,7 +10,6 @@ import br.com.api.commerce.exception.NotFoundException;
 import jakarta.validation.Valid;
 
 import java.net.URI;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,10 +34,10 @@ public class ProdutoController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoController.class);
 	
-	private final ProdutoRepository produtoRepository;
+	private final ProdutoService produtoService;
 	
-    public ProdutoController(ProdutoRepository produtoRepository) {
-		this.produtoRepository = produtoRepository;
+    public ProdutoController(ProdutoService produtoService) {
+		this.produtoService = produtoService;
 	}
 
 	@PostMapping
@@ -46,26 +45,11 @@ public class ProdutoController {
     public ResponseEntity<ProdutoViewDTO> cadastrarProduto(@Valid @RequestBody ProdutoFormDTO formDto, UriComponentsBuilder uriBuilder) {
 
         LOGGER.info("Iniciando cadastro do produto " + formDto);
-        Produto.Builder builderProduto = new Produto.Builder();
-        Produto entityProduto = builderProduto.setDescricao(formDto.descricao())
-        .setPrecoUnitario(formDto.precoUnitario())
-        .build();
+        ProdutoViewDTO produtoViewDTO = produtoService.salvarProduto(formDto);
+        URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoViewDTO.getId()).toUri();
         
-        Produto produtoCadastrado = produtoRepository.save(entityProduto);
-
-        ProdutoViewDTO.Builder builderProdutoView = new ProdutoViewDTO.Builder();
-		ProdutoViewDTO produtoViewDTO = builderProdutoView.setId(produtoCadastrado.getId())
-		.setDescricao(produtoCadastrado.getDescricao())
-		.setPrecoUnitario(produtoCadastrado.getPrecoUnitario())
-		.setDataCadastro(produtoCadastrado.getDataCadastro())
-		.build();
-        
-        LOGGER.info("Produto com id" + produtoViewDTO.getId() + " cadastrado com sucesso");
-        URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoCadastrado.getId()).toUri();
-        
-        Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produtoCadastrado.getId()).withSelfRel();
+        Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produtoViewDTO.getId()).withSelfRel();
         Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).withRel("todosProdutos");
-        
         produtoViewDTO.add(selfLink);
         produtoViewDTO.add(link);
 
@@ -75,27 +59,20 @@ public class ProdutoController {
 	@GetMapping("/{idProduto}")
 	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
 		
-		LOGGER.info("Buscando produto com id " + idProduto);
-		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
-		
+		LOGGER.info("Buscando produto id = " + idProduto);
+		Optional<Produto> possivelProduto = produtoService.buscarProdutoPorID(idProduto);
 		return possivelProduto.map(produto -> {
-			LOGGER.info("Produto com id " + idProduto + " encontrado com sucesso");
+			LOGGER.info("Produto com id = " + idProduto + " encontrado com sucesso");
 			Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).withRel("todosProdutos");
-			
-			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
-			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
-			.setDescricao(produto.getDescricao())
-			.setPrecoUnitario(produto.getPrecoUnitario())
-			.setDataCadastro(produto.getDataCadastro())
-			.build();
-			
+			ProdutoViewDTO produtoViewDTO = produtoService.buildProdutoViewDTO(produto);
 			produtoViewDTO.add(link);
 			return ResponseEntity.ok(produtoViewDTO);
 		}).orElseThrow(() -> {
-			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			LOGGER.warn("Produto id = " + idProduto + " não foi encontrado");
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		});
 	}
+	
 	
 	@GetMapping
 	public ResponseEntity<Page<ProdutoViewDTO>> listarTodosProdutos(
@@ -103,28 +80,20 @@ public class ProdutoController {
 			@RequestParam(value = "size", required = false, defaultValue = "2") int size,
 			@RequestParam(value = "campoFiltro", required = false, defaultValue = "precoUnitario") String campoFiltro) {
 		
-		
 		LOGGER.info("Buscando todos produtos.");
 		PageRequest pageSorted = PageRequest.of(page, size, Sort.by(campoFiltro).ascending());
-
-		Page<Produto> todosProdutos = produtoRepository.findAll(pageSorted);
+		
+		Page<Produto> todosProdutos = produtoService.listarTodosProdutos(pageSorted);
 		
 		List<ProdutoViewDTO> todosProdutosView = todosProdutos.stream().map(produto -> {
 			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
 			
-			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
-			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
-			.setDescricao(produto.getDescricao())
-			.setPrecoUnitario(produto.getPrecoUnitario())
-			.setDataCadastro(produto.getDataCadastro())
-			.build();
-			
+			ProdutoViewDTO produtoViewDTO = produtoService.buildProdutoViewDTO(produto);
 			produtoViewDTO.add(selfLink);
+			LOGGER.info("Produtos encontrado");
 			return produtoViewDTO;
 		}).collect(Collectors.toList());
-
 		LOGGER.info("Busca processada com sucesso");
-		
 		Page<ProdutoViewDTO> pageImplProdutos = new PageImpl<>(todosProdutosView, pageSorted, todosProdutosView.size());
 		return ResponseEntity.ok(pageImplProdutos);
 	}
@@ -134,16 +103,16 @@ public class ProdutoController {
 	public ResponseEntity<Void> deletarProduto(@PathVariable("idProduto") UUID idProduto){
 		
 		LOGGER.info("Iniciando exclusao do produto " + idProduto);
-		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
+		Optional<Produto> possivelProduto = produtoService.buscarProdutoPorID(idProduto);
 		
 		if(!possivelProduto.isPresent()) {
-			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			LOGGER.warn("Produto id = " + idProduto + " não foi encontrado");
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		}
 		
 		Produto produto = possivelProduto.get();
-		produtoRepository.delete(produto);
-		LOGGER.info("Produto com id " + idProduto + ", excluido com sucesso");
+		produtoService.deletarProduto(produto);
+		LOGGER.info("Produto id = " + idProduto + ", excluido com sucesso");
 		
 		return ResponseEntity.noContent().build();
 	}
@@ -152,27 +121,23 @@ public class ProdutoController {
 	@Transactional
 	public ResponseEntity<ProdutoViewDTO> atualizarProduto(@Valid @RequestBody ProdutoFormDTO formDTO, @PathVariable("idProduto") UUID idProduto){
 		
-		LOGGER.info("Buscando produto com id " + idProduto);
-		Optional<Produto> possivelProduto = produtoRepository.findById(idProduto);
-		LOGGER.info("Produto com id " + idProduto + " encontrado. Iniciando atualizacao do registro");
+		LOGGER.info("Buscando produto id = " + idProduto);
+		Optional<Produto> possivelProduto = produtoService.buscarProdutoPorID(idProduto);
+		LOGGER.info("Produto id = " + idProduto + " encontrado. Iniciando atualizacao do registro");
 		return possivelProduto.map(produto -> {
 			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario());
 			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
 			
-			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
-			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
-			.setDescricao(produto.getDescricao())
-			.setPrecoUnitario(produto.getPrecoUnitario())
-			.setDataCadastro(produto.getDataCadastro())
-			.build();
-			
+			ProdutoViewDTO produtoViewDTO = produtoService.buildProdutoViewDTO(produto);
 			produtoViewDTO.add(selfLink);
-			LOGGER.info("Produto com id " + idProduto + " atualizado com sucesso");
+			
+			LOGGER.info("Produto id = " + idProduto + " atualizado com sucesso");
 			return ResponseEntity.ok(produtoViewDTO);
 			
 		}).orElseThrow(() -> {
-			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
+			LOGGER.warn("Produto id = " + idProduto + " não foi encontrado");
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		});
 	}
+	
 }
