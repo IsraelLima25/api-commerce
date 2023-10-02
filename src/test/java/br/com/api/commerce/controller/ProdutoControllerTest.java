@@ -53,11 +53,7 @@ public class ProdutoControllerTest {
 	@BeforeEach
 	void setupInicial() {
 		produtoRepository.deleteAll();
-		
-		Produto primeiroProduto = new Produto("Core I7", new BigDecimal(2500));
-		Produto segundoProduto = new Produto("Core I5", new BigDecimal(1500));
-		produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));
-		produtosSalvo.addAll(List.of(primeiroProduto, segundoProduto));
+		carregarDados();
 	}
 	
 	@AfterEach
@@ -69,7 +65,7 @@ public class ProdutoControllerTest {
 	@DisplayName("Deve cadastrar produto e retornar status 201")
 	void cadastrarProduto() throws Exception {
 		
-		// TODO create builder pattern and loadingDados
+		// TODO create builder pattern
 		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
 		
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/produtos")
@@ -207,4 +203,20 @@ public class ProdutoControllerTest {
 	private String json(Object request) throws JsonProcessingException {
         return jsonMapper.writeValueAsString(request);
     }
+	
+	private void carregarDados() {
+		
+		Produto.Builder builder = new Produto.Builder();
+		
+		Produto primeiroProduto = builder.setDescricao("Core I7")
+		.setPrecoUnitario(new BigDecimal(2500))
+		.build();
+		
+		Produto segundoProduto = builder.setDescricao("Core I5")
+				.setPrecoUnitario(new BigDecimal(1500))
+				.build();
+		
+		produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));
+		produtosSalvo.addAll(List.of(primeiroProduto, segundoProduto));
+	}
 }

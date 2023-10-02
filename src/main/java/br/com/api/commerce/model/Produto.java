@@ -29,7 +29,7 @@ public class Produto {
 	@Deprecated
 	public Produto() { }
 	
-	public Produto(String descricao, BigDecimal precoUnitario) {
+	private Produto(String descricao, BigDecimal precoUnitario) {
 		this.id = UUID.randomUUID();
 		this.descricao = descricao;
 		this.dataCadastro = LocalDate.now();
@@ -55,5 +55,26 @@ public class Produto {
 	public void atualizarProduto(String descricao, BigDecimal precoUnitario) {
 		this.descricao = descricao;
 		this.precoUnitario = precoUnitario;
+	}
+	
+	public static class Builder {
+
+	    private String descricao;
+	    private BigDecimal precoUnitario;
+
+
+	    public Builder setDescricao(String descricao) {
+	        this.descricao = descricao;
+	        return this;
+	    }
+
+	    public Builder setPrecoUnitario(BigDecimal precoUnitario) {
+	        this.precoUnitario = precoUnitario;
+	        return this;
+	    }
+	    
+	    public Produto build() {
+	        return new Produto(descricao, precoUnitario);
+	    }
 	}
 }

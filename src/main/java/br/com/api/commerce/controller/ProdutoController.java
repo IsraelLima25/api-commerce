@@ -46,9 +46,20 @@ public class ProdutoController {
     public ResponseEntity<ProdutoViewDTO> cadastrarProduto(@Valid @RequestBody ProdutoFormDTO formDto, UriComponentsBuilder uriBuilder) {
 
         LOGGER.info("Iniciando cadastro do produto " + formDto);
-        Produto entityProduto = new Produto(formDto.descricao(), formDto.precoUnitario());
+        Produto.Builder builderProduto = new Produto.Builder();
+        Produto entityProduto = builderProduto.setDescricao(formDto.descricao())
+        .setPrecoUnitario(formDto.precoUnitario())
+        .build();
+        
         Produto produtoCadastrado = produtoRepository.save(entityProduto);
-        ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produtoCadastrado.getId(), produtoCadastrado.getDescricao(), produtoCadastrado.getPrecoUnitario(), produtoCadastrado.getDataCadastro());
+
+        ProdutoViewDTO.Builder builderProdutoView = new ProdutoViewDTO.Builder();
+		ProdutoViewDTO produtoViewDTO = builderProdutoView.setId(produtoCadastrado.getId())
+		.setDescricao(produtoCadastrado.getDescricao())
+		.setPrecoUnitario(produtoCadastrado.getPrecoUnitario())
+		.setDataCadastro(produtoCadastrado.getDataCadastro())
+		.build();
+        
         LOGGER.info("Produto com id" + produtoViewDTO.getId() + " cadastrado com sucesso");
         URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoCadastrado.getId()).toUri();
         
@@ -70,7 +81,14 @@ public class ProdutoController {
 		return possivelProduto.map(produto -> {
 			LOGGER.info("Produto com id " + idProduto + " encontrado com sucesso");
 			Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).withRel("todosProdutos");
-			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			
+			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
+			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
+			.setDescricao(produto.getDescricao())
+			.setPrecoUnitario(produto.getPrecoUnitario())
+			.setDataCadastro(produto.getDataCadastro())
+			.build();
+			
 			produtoViewDTO.add(link);
 			return ResponseEntity.ok(produtoViewDTO);
 		}).orElseThrow(() -> {
@@ -93,7 +111,14 @@ public class ProdutoController {
 		
 		List<ProdutoViewDTO> todosProdutosView = todosProdutos.stream().map(produto -> {
 			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
-			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			
+			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
+			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
+			.setDescricao(produto.getDescricao())
+			.setPrecoUnitario(produto.getPrecoUnitario())
+			.setDataCadastro(produto.getDataCadastro())
+			.build();
+			
 			produtoViewDTO.add(selfLink);
 			return produtoViewDTO;
 		}).collect(Collectors.toList());
@@ -133,7 +158,14 @@ public class ProdutoController {
 		return possivelProduto.map(produto -> {
 			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario());
 			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
-			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			
+			ProdutoViewDTO.Builder builder = new ProdutoViewDTO.Builder();
+			ProdutoViewDTO produtoViewDTO = builder.setId(produto.getId())
+			.setDescricao(produto.getDescricao())
+			.setPrecoUnitario(produto.getPrecoUnitario())
+			.setDataCadastro(produto.getDataCadastro())
+			.build();
+			
 			produtoViewDTO.add(selfLink);
 			LOGGER.info("Produto com id " + idProduto + " atualizado com sucesso");
 			return ResponseEntity.ok(produtoViewDTO);

@@ -13,10 +13,11 @@ public class ProdutoViewDTO extends RepresentationModel<ProdutoViewDTO> {
 	private BigDecimal precoUnitario;
 	private LocalDate dataCadastro;
 	
+	/* Apply constructor JPA */
 	@Deprecated
 	public ProdutoViewDTO() { }
 	
-	public ProdutoViewDTO(UUID id, String descricao, BigDecimal precoUnitario, LocalDate dataCadastro) {
+	private ProdutoViewDTO(UUID id, String descricao, BigDecimal precoUnitario, LocalDate dataCadastro) {
 		this.id = id;
 		this.descricao = descricao;
 		this.precoUnitario = precoUnitario;
@@ -38,5 +39,38 @@ public class ProdutoViewDTO extends RepresentationModel<ProdutoViewDTO> {
 	public LocalDate getDataCadastro() {
 		return dataCadastro;
 	}
-	
+
+	public static class Builder {
+
+	    private UUID id;
+	    private String descricao;
+	    private BigDecimal precoUnitario;
+	    private LocalDate dataCadastro;
+
+	    public Builder setId(UUID id) {
+	        this.id = id;
+	        return this;
+	    }
+
+	    public Builder setDescricao(String descricao) {
+	        this.descricao = descricao;
+	        return this;
+	    }
+
+	    public Builder setPrecoUnitario(BigDecimal precoUnitario) {
+	        this.precoUnitario = precoUnitario;
+	        return this;
+	    }
+	    
+	    public Builder setDataCadastro(LocalDate dataCadastro) {
+	        this.dataCadastro = dataCadastro;
+	        return this;
+	    }
+
+	    public ProdutoViewDTO build() {
+	        return new ProdutoViewDTO(id, descricao, precoUnitario, dataCadastro);
+	    }
+	}
 }
+
+
