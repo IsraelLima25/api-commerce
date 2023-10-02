@@ -10,11 +10,20 @@ import br.com.api.commerce.exception.NotFoundException;
 import jakarta.validation.Valid;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +60,7 @@ public class ProdutoController {
     }
 	
 	@GetMapping("/{idProduto}")
+	// TODO Hateoas
 	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
 		
 		LOGGER.info("Buscando produto com id " + idProduto);
@@ -63,5 +73,27 @@ public class ProdutoController {
 			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		});
+	}
+	
+	@GetMapping
+	public ResponseEntity<Page<ProdutoViewDTO>> listarTodosProdutos(
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page, 
+			@RequestParam(value = "size", required = false, defaultValue = "2") int size,
+			@RequestParam(value = "campoFiltro", required = false, defaultValue = "precoUnitario") String campoFiltro) {
+		
+		
+		LOGGER.info("Buscando todos produtos.");
+		PageRequest pageSorted = PageRequest.of(page, size, Sort.by(campoFiltro).ascending());
+
+		Page<Produto> todosProdutos = produtoRepository.findAll(pageSorted);
+		
+		List<ProdutoViewDTO> todosProdutosView = todosProdutos.stream().map(produto -> {
+			return new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+		}).collect(Collectors.toList());
+
+		LOGGER.info("Busca processada com sucesso");
+		
+		Page<ProdutoViewDTO> pageImplProdutos = new PageImpl<>(todosProdutosView, pageSorted, todosProdutosView.size());
+		return ResponseEntity.ok(pageImplProdutos);
 	}
 }

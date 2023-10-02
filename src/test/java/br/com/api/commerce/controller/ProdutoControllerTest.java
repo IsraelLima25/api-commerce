@@ -1,6 +1,8 @@
 package br.com.api.commerce.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -46,14 +48,16 @@ public class ProdutoControllerTest {
 	@Autowired
 	ProdutoRepository produtoRepository;
 	
-	Produto produtoSalvo;
+	List<Produto> produdosSalvo = new ArrayList<>();
 	
 	@BeforeEach
 	void setupInicial() {
 		produtoRepository.deleteAll();
 		
-		Produto produto = new Produto("Core I5", new BigDecimal(1500));
-		produtoSalvo = produtoRepository.save(produto);
+		Produto primeiroProduto = new Produto("Core I7", new BigDecimal(2500));
+		Produto segundoProduto = new Produto("Core I5", new BigDecimal(1500));
+		produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));
+		produdosSalvo.addAll(List.of(primeiroProduto, segundoProduto));
 	}
 	
 	@AfterEach
@@ -84,15 +88,17 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Deve retornar produto por id e retornar status 200")
 	void buscarProdutoPorIdExistente() throws Exception {
-	
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos/{idProduto}", produtoSalvo.getId())
+
+		Produto primeiroProduto = this.produdosSalvo.get(0);
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos/{idProduto}", primeiroProduto.getId())
 				.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
-				.andExpect(jsonPath("$.descricao", is("Core I5")))
-				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(1500).intValue())))
+				.andExpect(jsonPath("$.descricao", is("Core I7")))
+				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(2500).intValue())))
 				.andExpect(status().isOk());
 	}
 	
+	//TODO assert fails verification
 	@Test
 	@DisplayName("Não deve retornar produto por id inexistente e retornar status 404")
 	void buscarProdutoPorIdInexistente() throws Exception {
@@ -105,8 +111,40 @@ public class ProdutoControllerTest {
 				.andExpect(jsonPath("$.campo", is("idProduto")))
 				.andExpect(jsonPath("$.mensagem", is("Nenhum produto encontrado")))
 				.andExpect(status().isNotFound());
-		
 	}
+	
+	@Test
+	@DisplayName("Deve listar todos os produtos ordenado por descricao e retornar status 200")
+	void listarTodosProdutosPaginadoOrdenadoPorDescricao() throws Exception{
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.totalElements", is(2)))
+				.andExpect(jsonPath("$.content[0].descricao", is("Core I5")))
+				.andExpect(jsonPath("$.content[0].precoUnitario", is(new BigDecimal(1500).intValue())))
+				.andExpect(jsonPath("$.content[1].descricao", is("Core I7")))
+				.andExpect(jsonPath("$.content[1].precoUnitario", is(new BigDecimal(2500).intValue())))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@DisplayName("Deve listar todos os produtos ordenado por descricao e retornar status 200")
+	void listarTodosProdutosPaginadoOrdenadoPorPrecoUnitario() throws Exception{
+		
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos?campoFiltro=precoUnitario")
+				.contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.totalElements", is(2)))
+				.andExpect(jsonPath("$.content[0].descricao", is("Core I5")))
+				.andExpect(jsonPath("$.content[0].precoUnitario", is(new BigDecimal(1500).intValue())))
+				.andExpect(jsonPath("$.content[1].descricao", is("Core I7")))
+				.andExpect(jsonPath("$.content[1].precoUnitario", is(new BigDecimal(2500).intValue())))
+				.andExpect(status().isOk());
+	}
+	
 	
 	private String json(Object request) throws JsonProcessingException {
         return jsonMapper.writeValueAsString(request);
