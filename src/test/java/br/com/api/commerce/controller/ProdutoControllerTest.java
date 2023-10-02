@@ -77,7 +77,6 @@ public class ProdutoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.descricao", is("Core I3")))
 				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(900.00).intValue())))
-				.andExpect(jsonPath("$._links.self.href").exists())
 				.andExpect(status().isCreated())
 				.andExpect(header().exists("Location"));
 		

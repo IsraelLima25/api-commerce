@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -53,13 +52,16 @@ public class ProdutoController {
         LOGGER.info("Produto com id" + produtoViewDTO.getId() + " cadastrado com sucesso");
         URI uri = uriBuilder.path("/api/produtos/{id}").buildAndExpand(produtoCadastrado.getId()).toUri();
         
-        Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produtoCadastrado.getId()).withSelfRel();
+        Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produtoCadastrado.getId()).withSelfRel();
+        Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).withRel("todosProdutos");
+        
+        produtoViewDTO.add(selfLink);
         produtoViewDTO.add(link);
+
         return ResponseEntity.created(uri).body(produtoViewDTO);
     }
 	
 	@GetMapping("/{idProduto}")
-	// TODO Hateoas
 	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
 		
 		LOGGER.info("Buscando produto com id " + idProduto);
@@ -67,7 +69,10 @@ public class ProdutoController {
 		
 		return possivelProduto.map(produto -> {
 			LOGGER.info("Produto com id " + idProduto + " encontrado com sucesso");
-			return ResponseEntity.ok(new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro()));
+			Link link = WebMvcLinkBuilder.linkTo(ProdutoController.class).withRel("todosProdutos");
+			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			produtoViewDTO.add(link);
+			return ResponseEntity.ok(produtoViewDTO);
 		}).orElseThrow(() -> {
 			LOGGER.warn("Produto com id " + idProduto + " não foi encontrado");
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
@@ -87,7 +92,10 @@ public class ProdutoController {
 		Page<Produto> todosProdutos = produtoRepository.findAll(pageSorted);
 		
 		List<ProdutoViewDTO> todosProdutosView = todosProdutos.stream().map(produto -> {
-			return new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
+			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			produtoViewDTO.add(selfLink);
+			return produtoViewDTO;
 		}).collect(Collectors.toList());
 
 		LOGGER.info("Busca processada com sucesso");
@@ -124,7 +132,9 @@ public class ProdutoController {
 		LOGGER.info("Produto com id " + idProduto + " encontrado. Iniciando atualizacao do registro");
 		return possivelProduto.map(produto -> {
 			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario());
+			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
 			ProdutoViewDTO produtoViewDTO = new ProdutoViewDTO(produto.getId(), produto.getDescricao(), produto.getPrecoUnitario(), produto.getDataCadastro());
+			produtoViewDTO.add(selfLink);
 			LOGGER.info("Produto com id " + idProduto + " atualizado com sucesso");
 			return ResponseEntity.ok(produtoViewDTO);
 			
