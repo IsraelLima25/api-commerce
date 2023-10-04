@@ -62,17 +62,27 @@ public class ClienteControllerTest {
 	@DisplayName("Deve cadastrar cliente e retornar status 201")
 	void cadastrarCliente() throws Exception {
 		
-		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "97230413087");
+		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "74785966068");
 		
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/clientes")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/clientes")
 				.content(json(clienteFormRequest))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.nome", is("Roberto")))
-				.andExpect(jsonPath("$.cpf", is("97230413087")))
+				.andExpect(jsonPath("$.cpf", is("74785966068")))
 				.andExpect(status().isCreated())
 				.andExpect(header().exists("Location"));
-		
-		resultActions.andExpect(status().isCreated());
+	}
+
+	@Test
+	@DisplayName("Não deve cadastrar cliente com cpf repetido e deve retornar status 400")
+	void naoDeveCadastrarClienteComCPFRepetido() throws Exception {
+
+		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "78067180016");
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/clientes")
+						.content(json(clienteFormRequest))
+						.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
 	}
 	
 	@Test
@@ -109,7 +119,6 @@ public class ClienteControllerTest {
 	private void carregarDados() {
 		
 		Cliente cliente = new Cliente("Julia", "78067180016");
-		
 		clienteRepository.save(cliente);
 		clientesSalvo.addAll(List.of(cliente));
 	}
