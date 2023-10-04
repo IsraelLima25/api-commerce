@@ -70,12 +70,26 @@ class PedidoContollerTest {
 
         PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("66367650032", FormaPagamentoIndicador.PIX, listPedidoProdutos);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
                         .content(json(pedidoFormRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.cpfCliente", is("66367650032")))
                 .andExpect(jsonPath("$.tipoPagamento", is(FormaPagamentoIndicador.PIX.toString())))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Não deve fazer pedido quando cpf do cliente não existir e deve retornar status 400")
+    void naoDeveFazerPedidoQuandoCPFClienteInexistente() throws Exception{
+
+        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("89762551001", FormaPagamentoIndicador.PIX, listPedidoProdutos);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
+                        .content(json(pedidoFormRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].campo", is("cpfCliente")))
+                .andExpect(jsonPath("$[0].mensagem", is("Não existe cliente com este cpf")))
+                .andExpect(status().isBadRequest());
     }
 
     private String json(Object request) throws JsonProcessingException {

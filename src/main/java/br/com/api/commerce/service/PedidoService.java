@@ -32,6 +32,7 @@ public class PedidoService {
 
 	@Autowired
 	List<PedidoStepsGenerator> pedidoStepsGenerators;
+
 	public PedidoService(ClienteService clienteService, ItemPedidoService itemPedidoService, PedidoRepository pedidoRepository) {
 		this.clienteService = clienteService;
 		this.itemPedidoService = itemPedidoService;
