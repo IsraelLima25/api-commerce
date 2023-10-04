@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -89,6 +90,21 @@ class PedidoContollerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].campo", is("cpfCliente")))
                 .andExpect(jsonPath("$[0].mensagem", is("Não existe cliente com este cpf")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Não deve fazer pedido quando id do produto não existir e deve retornar status 400")
+    void naoDeveFazerPedidoQuandoIDProdutosNaoExistir() throws Exception{
+
+        UUID idProdutoInexistente = UUID.randomUUID();
+        this.listPedidoProdutos.add(new PedidoProdutoFormDTO(idProdutoInexistente, 2));
+
+        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("89762551001", FormaPagamentoIndicador.PIX, listPedidoProdutos);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
+                        .content(json(pedidoFormRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
