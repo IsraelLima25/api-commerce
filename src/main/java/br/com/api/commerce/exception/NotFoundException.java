@@ -8,16 +8,15 @@ public class NotFoundException extends RuntimeException {
 	private String mensagem;
 
 	public NotFoundException(String campo, String mensagem) {
-		this.mensagem = mensagem;
 		this.campo = campo;
+		this.mensagem = mensagem;
+	}
+
+	public String getCampo() {
+		return campo;
 	}
 
 	public String getMensagem() {
 		return mensagem;
 	}
-	
-	public String getCampo() {
-		return campo;
-	}
-	
 }

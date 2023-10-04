@@ -61,8 +61,8 @@ class PedidoContollerTest {
 
     @AfterEach
     void setupFinal() {
-        clienteRepository.deleteAll();
         produtoRepository.deleteAll();
+        clienteRepository.deleteAll();
     }
 
     @Test
@@ -83,7 +83,7 @@ class PedidoContollerTest {
     @DisplayName("Não deve fazer pedido quando cpf do cliente não existir e deve retornar status 400")
     void naoDeveFazerPedidoQuandoCPFClienteInexistente() throws Exception{
 
-        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("89762551001", FormaPagamentoIndicador.PIX, listPedidoProdutos);
+        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("03375298099", FormaPagamentoIndicador.PIX, listPedidoProdutos);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
                         .content(json(pedidoFormRequest))
@@ -91,6 +91,21 @@ class PedidoContollerTest {
                 .andExpect(jsonPath("$[0].campo", is("cpfCliente")))
                 .andExpect(jsonPath("$[0].mensagem", is("Não existe cliente com este cpf")))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Não deve fazer pedido quando a quantidade comprada é maior que a quantidade em estoque e deve retornar status 500")
+    void naoDeveFazerPedidoQuandoQuantidadeProdutoCompradoMaiorQueEstoque() throws Exception{
+
+        List<PedidoProdutoFormDTO> listPedidoProdutoQuantidadeInvalida = new ArrayList<>();
+        listPedidoProdutoQuantidadeInvalida.add(new PedidoProdutoFormDTO(this.listPedidoProdutos.get(0).id(), 1000));
+
+        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("66367650032", FormaPagamentoIndicador.PIX, listPedidoProdutoQuantidadeInvalida);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
+                        .content(json(pedidoFormRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -131,9 +146,11 @@ class PedidoContollerTest {
         Produto.Builder builder = new Produto.Builder();
         Produto primeiroProduto = builder.setDescricao("Core I3")
                 .setPrecoUnitario(new BigDecimal(2000))
+                .setQuantidade(10)
                 .build();
         Produto segundoProduto = builder.setDescricao("Core I7")
                 .setPrecoUnitario(new BigDecimal(4500))
+                .setQuantidade(20)
                 .build();
         produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));
         return List.of(primeiroProduto, segundoProduto);

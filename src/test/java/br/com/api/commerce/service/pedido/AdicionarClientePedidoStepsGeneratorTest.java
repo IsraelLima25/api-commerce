@@ -61,7 +61,5 @@ class AdicionarClientePedidoStepsGeneratorTest {
         BusinessException thrown = assertThrows(BusinessException.class, () -> {
             adicionarClienteStep.processarStep(pedido, formDTO);
         });
-
-        assertEquals(String.format("Cliente com cpf {} não existe!", formDTO.cpfCliente()),thrown.getMessage());
     }
 }

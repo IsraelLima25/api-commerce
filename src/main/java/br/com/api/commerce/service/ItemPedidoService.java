@@ -29,10 +29,16 @@ public class ItemPedidoService {
 
 	public List<ItemPedido> gerarItensPedido(List<PedidoProdutoFormDTO> produtos, Pedido pedido) {
 		
-		LOGGER.info("Gerando intes para o pedido com id {}", pedido.getId());
+		LOGGER.info("Gerando itens para o pedido com id {}", pedido.getId());
 		List<ItemPedido> itens = new ArrayList<>();
 		produtos.stream().forEach(produto -> {
 			Produto produtoBusca = produtoRepository.findById(produto.id()).get();
+			LOGGER.info("Checando disponibilidade do produto=" + produtoBusca.getId() + " em estoque.");
+			produtoBusca.temEstoque(produto.quantidade());
+			LOGGER.info("Produto=" + produtoBusca.getId() + " disponivel");
+			LOGGER.info("Produto=" + produtoBusca.getId() + " sendo abatido do estoque");
+			produtoBusca.abaterEstoque(produto.quantidade());
+			LOGGER.info("Produto=" + produtoBusca.getId() + " abatido do estoque com sucesso");
 			ItemPedido item = new ItemPedido(produtoBusca, pedido, produto.quantidade());
 			itens.add(item);
 		});

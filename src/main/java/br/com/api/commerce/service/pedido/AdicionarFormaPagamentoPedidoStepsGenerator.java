@@ -12,6 +12,7 @@ public class AdicionarFormaPagamentoPedidoStepsGenerator implements PedidoStepsG
     private static final Logger LOGGER = LoggerFactory.getLogger(AdicionarFormaPagamentoPedidoStepsGenerator.class);
     @Override
     public Pedido processarStep(Pedido pedido, PedidoFormDTO formDTO) {
+
         LOGGER.info("Adicionando forma de pagamento = " + formDTO.formaPagamento() + " para o pedido com codigo = " + pedido.getId());
         pedido.adicionarFormaPagamento(formDTO.formaPagamento());
         LOGGER.info("Forma de pagamento = " + formDTO.formaPagamento() + " adicionada com sucesso para o pedido com codigo = " + pedido.getId());

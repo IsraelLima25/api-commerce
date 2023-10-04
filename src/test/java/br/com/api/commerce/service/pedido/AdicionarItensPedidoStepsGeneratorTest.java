@@ -41,6 +41,7 @@ class AdicionarItensPedidoStepsGeneratorTest {
         Produto.Builder builder = new Produto.Builder();
         Produto produto = builder.setDescricao("Core I3")
                 .setPrecoUnitario(new BigDecimal(2000))
+                .setQuantidade(100)
                 .build();
 
         List<PedidoProdutoFormDTO> listProdutosForm = List.of(new PedidoProdutoFormDTO(produto.getId(), 3));

@@ -66,13 +66,14 @@ public class ProdutoControllerTest {
 	void cadastrarProduto() throws Exception {
 		
 		// TODO create builder pattern
-		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
+		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 10);
 		
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/produtos")
 				.content(json(produtoFormRequest))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.descricao", is("Core I3")))
 				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(900.00).intValue())))
+				.andExpect(jsonPath("$.quantidade", is(10)))
 				.andExpect(status().isCreated())
 				.andExpect(header().exists("Location"));
 		
@@ -89,6 +90,7 @@ public class ProdutoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(jsonPath("$.descricao", is("Core I7")))
+				.andExpect(jsonPath("$.quantidade", is(1)))
 				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(2500).intValue())))
 				.andExpect(status().isOk());
 	}
@@ -118,8 +120,10 @@ public class ProdutoControllerTest {
 				.andExpect(jsonPath("$.totalElements", is(2)))
 				.andExpect(jsonPath("$.content[0].descricao", is("Core I5")))
 				.andExpect(jsonPath("$.content[0].precoUnitario", is(new BigDecimal(1500).intValue())))
+				.andExpect(jsonPath("$.content[0].quantidade", is(2)))
 				.andExpect(jsonPath("$.content[1].descricao", is("Core I7")))
 				.andExpect(jsonPath("$.content[1].precoUnitario", is(new BigDecimal(2500).intValue())))
+				.andExpect(jsonPath("$.content[1].quantidade", is(1)))
 				.andExpect(status().isOk());
 	}
 	
@@ -134,8 +138,10 @@ public class ProdutoControllerTest {
 				.andExpect(jsonPath("$.totalElements", is(2)))
 				.andExpect(jsonPath("$.content[0].descricao", is("Core I5")))
 				.andExpect(jsonPath("$.content[0].precoUnitario", is(new BigDecimal(1500).intValue())))
+				.andExpect(jsonPath("$.content[0].quantidade", is(2)))
 				.andExpect(jsonPath("$.content[1].descricao", is("Core I7")))
 				.andExpect(jsonPath("$.content[1].precoUnitario", is(new BigDecimal(2500).intValue())))
+				.andExpect(jsonPath("$.content[1].quantidade", is(1)))
 				.andExpect(status().isOk());
 	}
 	
@@ -171,7 +177,7 @@ public class ProdutoControllerTest {
 	void atualizarProdutoPorIdExistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados
-		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
+		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 10);
 		
 		Produto produto = this.produtosSalvo.get(1);
 		
@@ -180,6 +186,7 @@ public class ProdutoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.descricao", is("Core I3")))
 				.andExpect(jsonPath("$.precoUnitario", is(new BigDecimal(900.00).intValue())))
+				.andExpect(jsonPath("$.quantidade", is(10)))
 				.andExpect(status().isOk());
 				
 	}
@@ -189,7 +196,7 @@ public class ProdutoControllerTest {
 	void atualizarProdutoPorIdInexistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados
-		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00));
+		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 5);
 		
 		UUID idInvalido = UUID.randomUUID();
 		
@@ -208,11 +215,13 @@ public class ProdutoControllerTest {
 		Produto.Builder builder = new Produto.Builder();
 		
 		Produto primeiroProduto = builder.setDescricao("Core I7")
-		.setPrecoUnitario(new BigDecimal(2500))
-		.build();
+				.setPrecoUnitario(new BigDecimal(2500))
+				.setQuantidade(1)
+				.build();
 		
 		Produto segundoProduto = builder.setDescricao("Core I5")
 				.setPrecoUnitario(new BigDecimal(1500))
+				.setQuantidade(2)
 				.build();
 		
 		produtoRepository.saveAll(List.of(primeiroProduto, segundoProduto));

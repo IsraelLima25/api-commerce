@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 
 public record ProdutoFormDTO(
 		@NotBlank String descricao, 
-		@NotNull @Positive BigDecimal precoUnitario) 
+		@NotNull @Positive BigDecimal precoUnitario,
+
+		@NotNull @Positive Integer quantidade)
 { }
 

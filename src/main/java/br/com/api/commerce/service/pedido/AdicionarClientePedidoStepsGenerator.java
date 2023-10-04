@@ -30,7 +30,7 @@ public class AdicionarClientePedidoStepsGenerator implements PedidoStepsGenerato
         Optional<Cliente> possivelCliente = clienteService.buscarClientePorCPF(formDTO.cpfCliente());
         if(!possivelCliente.isPresent()) {
             LOGGER.warn("Cliente com cpf = " + Mask.applyCpf(formDTO.cpfCliente()) + " não existe!");
-            throw new BusinessException(String.format("Cliente com cpf {} não existe!", formDTO.cpfCliente()));
+            throw new BusinessException("cpf",String.format("Cliente com cpf {} não existe!" + formDTO.cpfCliente()));
         }
         Cliente cliente = possivelCliente.get();
         pedido.adicionarCliente(cliente);

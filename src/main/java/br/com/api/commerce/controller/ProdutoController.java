@@ -33,9 +33,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ProdutoController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoController.class);
-	
-	private final ProdutoService produtoService;
-	
+		private final ProdutoService produtoService;
+
     public ProdutoController(ProdutoService produtoService) {
 		this.produtoService = produtoService;
 	}
@@ -125,7 +124,7 @@ public class ProdutoController {
 		Optional<Produto> possivelProduto = produtoService.buscarProdutoPorID(idProduto);
 		LOGGER.info("Produto id = " + idProduto + " encontrado. Iniciando atualizacao do registro");
 		return possivelProduto.map(produto -> {
-			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario());
+			produto.atualizarProduto(formDTO.descricao(), formDTO.precoUnitario(), formDTO.quantidade());
 			Link selfLink = WebMvcLinkBuilder.linkTo(ProdutoController.class).slash(produto.getId()).withSelfRel();
 			
 			ProdutoViewDTO produtoViewDTO = produtoService.buildProdutoViewDTO(produto);

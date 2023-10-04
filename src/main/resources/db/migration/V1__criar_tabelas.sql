@@ -2,7 +2,8 @@ CREATE TABLE tbl_produto(
 id VARCHAR(255) NOT NULL PRIMARY KEY, 
 descricao VARCHAR(255) NOT NULL, 
 data_cadastro DATE NOT NULL,
-preco_unitario DECIMAL(8,2) NOT NULL);
+preco_unitario DECIMAL(8,2) NOT NULL,
+quantidade BIGINT);
 
 CREATE TABLE tbl_cliente(
 id VARCHAR(255) NOT NULL PRIMARY KEY,

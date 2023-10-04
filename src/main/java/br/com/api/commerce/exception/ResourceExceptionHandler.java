@@ -39,18 +39,18 @@ public class ResourceExceptionHandler {
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler({BusinessException.class})
-	public String handlerBusinessException(BusinessException exception) {
-		return exception.getMessage();
+	public CampoInvalido handlerBusinessException(BusinessException exception) {
+		CampoInvalido campoInvalido = new CampoInvalido(exception.getCampo(), exception.getMensagem());
+		return campoInvalido;
 	}
 	
-	 private List<CampoInvalido> extrairErros(List<FieldError> fieldErrors){
-	        List<CampoInvalido> camposInvalido = new ArrayList<>();
-	        fieldErrors.forEach(error -> {
-	            CampoInvalido fieldErro = new CampoInvalido(error.getField(),
-	                    messageSource.getMessage(error, LocaleContextHolder.getLocale()));
-	            camposInvalido.add(fieldErro);
-	        });
-	        return camposInvalido;
-	    }
-
+	private List<CampoInvalido> extrairErros(List<FieldError> fieldErrors){
+	       List<CampoInvalido> camposInvalido = new ArrayList<>();
+	       fieldErrors.forEach(error -> {
+	           CampoInvalido fieldErro = new CampoInvalido(error.getField(),
+	                   messageSource.getMessage(error, LocaleContextHolder.getLocale()));
+	           camposInvalido.add(fieldErro);
+	       });
+	       return camposInvalido;
+	}
 }

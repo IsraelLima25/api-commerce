@@ -57,6 +57,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoService.clas
     	return builderProduto
     			.setDescricao(formDTO.descricao())
     			.setPrecoUnitario(formDTO.precoUnitario())
+				.setQuantidade(formDTO.quantidade())
     			.build();
     }
     
@@ -66,6 +67,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoService.clas
     	return builderProdutoView.setId(produto.getId())
 				.setDescricao(produto.getDescricao())
 				.setPrecoUnitario(produto.getPrecoUnitario())
+				.setQuantidade(produto.getQuantidade())
 				.setDataCadastro(produto.getDataCadastro())
 				.build();
     }
