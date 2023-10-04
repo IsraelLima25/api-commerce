@@ -93,7 +93,6 @@ public class ProdutoControllerTest {
 				.andExpect(status().isOk());
 	}
 	
-	//TODO assert fails verification
 	@Test
 	@DisplayName("Não deve retornar produto por id inexistente e retornar status 404")
 	void buscarProdutoPorIdInexistente() throws Exception {

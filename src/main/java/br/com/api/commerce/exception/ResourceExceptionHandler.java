@@ -36,6 +36,12 @@ public class ResourceExceptionHandler {
         List<CampoInvalido> camposInvalidos = extrairErros(fieldErrors);
         return camposInvalidos;
     }
+
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler({BusinessException.class})
+	public String handlerBusinessException(BusinessException exception) {
+		return exception.getMessage();
+	}
 	
 	 private List<CampoInvalido> extrairErros(List<FieldError> fieldErrors){
 	        List<CampoInvalido> camposInvalido = new ArrayList<>();
