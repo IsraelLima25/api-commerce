@@ -1,6 +1,6 @@
 package br.com.api.commerce.service;
 
-import br.com.api.commerce.configurations.PropertiesConfig;
+import br.com.api.commerce.configurations.PropertiesConfiguration;
 import br.com.api.commerce.model.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -15,9 +15,9 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    private PropertiesConfig configuration;
+    private PropertiesConfiguration configuration;
 
-    public TokenService(PropertiesConfig configuration) {
+    public TokenService(PropertiesConfiguration configuration) {
         this.configuration = configuration;
     }
 

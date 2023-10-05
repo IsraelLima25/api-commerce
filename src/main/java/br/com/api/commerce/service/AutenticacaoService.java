@@ -1,6 +1,7 @@
 package br.com.api.commerce.service;
 
 import br.com.api.commerce.repository.UsuarioRepository;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

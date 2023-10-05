@@ -2,7 +2,6 @@ package br.com.api.commerce.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -65,9 +65,8 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Deve cadastrar produto e retornar status 201")
 	@WithMockUser
-	void cadastrarProduto() throws Exception {
-		
-		// TODO create builder pattern
+	void deveCadastrarProduto() throws Exception {
+
 		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 10);
 		
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/produtos")
@@ -78,14 +77,11 @@ public class ProdutoControllerTest {
 				.andExpect(jsonPath("$.quantidade", is(10)))
 				.andExpect(status().isCreated())
 				.andExpect(header().exists("Location"));
-		
-		resultActions.andExpect(status().isCreated());
-		
 	}
 	
 	@Test
 	@DisplayName("Deve retornar produto por id existente e retornar status 200")
-	void buscarProdutoPorIdExistente() throws Exception {
+	void deveBuscarProdutoPorIdExistente() throws Exception {
 
 		Produto primeiroProduto = this.produtosSalvo.get(0);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos/{idProduto}", primeiroProduto.getId())
@@ -99,7 +95,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Não deve retornar produto por id inexistente e retornar status 404")
-	void buscarProdutoPorIdInexistente() throws Exception {
+	void naoDeveBuscarProdutoPorIdInexistente() throws Exception {
 		
 		UUID idInvalido = UUID.randomUUID();
 		
@@ -113,7 +109,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Deve listar todos os produtos ordenado por descricao e retornar status 200")
-	void listarTodosProdutosPaginadoOrdenadoPorDescricao() throws Exception{
+	void deveListarTodosProdutosPaginadoOrdenadoPorDescricao() throws Exception{
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -130,8 +126,8 @@ public class ProdutoControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Deve listar todos os produtos ordenado por descricao e retornar status 200")
-	void listarTodosProdutosPaginadoOrdenadoPorPrecoUnitario() throws Exception{
+	@DisplayName("Deve listar todos os produtos ordenado por precoUnitario e retornar status 200")
+	void deveListarTodosProdutosPaginadoOrdenadoPorPrecoUnitario() throws Exception{
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/produtos?campoFiltro=precoUnitario")
 				.contentType(MediaType.APPLICATION_JSON))
@@ -150,7 +146,7 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Deve deletar produto por id existente e retornar status 404")
 	@WithMockUser
-	void deletarProdutoPorIdExistente() throws Exception {
+	void deveDeletarProdutoPorIdExistente() throws Exception {
 		
 		Produto segundoProduto = this.produtosSalvo.get(1);
 		
@@ -164,7 +160,7 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Não deve deletar produto por id inexistente e retornar status 404")
 	@WithMockUser
-	void deletarProdutoPorIdInexistente() throws Exception {
+	void naoDeveDeletarProdutoPorIdInexistente() throws Exception {
 		
 		UUID idInvalido = UUID.randomUUID();
 		
@@ -179,7 +175,7 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Deve atualizar produto por id existente")
 	@WithMockUser
-	void atualizarProdutoPorIdExistente() throws Exception {
+	void deveAtualizarProdutoPorIdExistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados
 		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 10);
@@ -199,7 +195,7 @@ public class ProdutoControllerTest {
 	@Test
 	@DisplayName("Não deve atualizar produto por id inexistente")
 	@WithMockUser
-	void atualizarProdutoPorIdInexistente() throws Exception {
+	void naoDeveatualizarProdutoPorIdInexistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados
 		ProdutoFormDTO produtoFormRequest = new ProdutoFormDTO("Core I3", new BigDecimal(900.00), 5);

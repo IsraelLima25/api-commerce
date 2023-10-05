@@ -6,5 +6,7 @@ import br.com.api.commerce.validators.global.UniqueValue;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CPF;
 
-public record ClienteFormDTO(@NotBlank String nome, @CPF @NotBlank @UniqueValue(domainClass = Cliente.class, fieldName = "cpf") String cpf) {
-}
+public record ClienteFormDTO(
+        @NotBlank String nome,
+        @CPF @NotBlank @UniqueValue(domainClass = Cliente.class, fieldName = "cpf") String cpf)
+{ }

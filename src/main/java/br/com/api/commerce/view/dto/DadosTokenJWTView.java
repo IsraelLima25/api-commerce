@@ -1,4 +1,5 @@
 package br.com.api.commerce.view.dto;
 
-public record DadosTokenJWTView(String token) {
-}
+public record DadosTokenJWTView(
+        String token
+) { }

@@ -6,8 +6,10 @@ import java.util.Optional;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ import br.com.api.commerce.model.Cliente;
 import br.com.api.commerce.service.ClienteService;
 import br.com.api.commerce.utilities.Mask;
 import br.com.api.commerce.view.dto.ClienteViewDTO;
+
 import jakarta.validation.Valid;
 
 @RestController

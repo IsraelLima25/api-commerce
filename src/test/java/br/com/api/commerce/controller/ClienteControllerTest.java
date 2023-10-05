@@ -1,6 +1,7 @@
 package br.com.api.commerce.controller;
 
 import static org.hamcrest.CoreMatchers.is;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +63,7 @@ public class ClienteControllerTest {
 	@Test
 	@DisplayName("Deve cadastrar cliente e retornar status 201")
 	@WithMockUser
-	void cadastrarCliente() throws Exception {
+	void deveCadastrarCliente() throws Exception {
 		
 		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "74785966068");
 		
@@ -91,7 +92,7 @@ public class ClienteControllerTest {
 	@Test
 	@DisplayName("Deve retornar cliente por cpf existente e retornar status 200")
 	@WithMockUser
-	void buscarClientePorCpfExistente() throws Exception {
+	void deveBuscarClientePorCpfExistente() throws Exception {
 
 		Cliente primeiroCliente = this.clientesSalvo.get(0);
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/clientes/{cpf}", primeiroCliente.getCpf())
@@ -105,7 +106,7 @@ public class ClienteControllerTest {
 	@Test
 	@DisplayName("Não deve retornar cliente com cpf inexistente e retornar status 404")
 	@WithMockUser
-	void buscarProdutoPorCpfInexistente() throws Exception {
+	void naoDevebuscarClientePorCpfInexistente() throws Exception {
 		
 		String cpfInexistente = "56823761024";
 		

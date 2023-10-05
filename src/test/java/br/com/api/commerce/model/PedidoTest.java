@@ -1,13 +1,15 @@
 package br.com.api.commerce.model;
 
 import br.com.api.commerce.indicador.FormaPagamentoIndicador;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +23,10 @@ class PedidoTest {
     @BeforeEach
     void setupInicial(){
         carregarDados();
-
     }
 
     @Test
+    @DisplayName("Deve calcular o valor total do pedido")
     void deveCalcularValorTotalPedido() {
         Pedido pedido = new Pedido();
         produtos.forEach(produto -> {
@@ -35,6 +37,7 @@ class PedidoTest {
     }
 
     @Test
+    @DisplayName("Deve calcular a taxa correta para a forma de pagamento CARTÃO DE CRÉDITO")
     void deveCalcularTaxaCartaoCreditoPedido(){
 
         Pedido pedido = new Pedido();
@@ -50,6 +53,7 @@ class PedidoTest {
     }
 
     @Test
+    @DisplayName("Deve calcular a taxa correta para a forma de pagamento CARTÃO DE DÉBITO")
     void deveCalcularTaxaCartaoDebitoPedido(){
 
         Pedido pedido = new Pedido();
@@ -65,7 +69,8 @@ class PedidoTest {
     }
 
     @Test
-    void deveCalcularTaxaCartaoPixPedido(){
+    @DisplayName("Deve calcular a taxa correta para a forma de pagamento PIX")
+    void deveCalcularTaxaPixPedido(){
 
         Pedido pedido = new Pedido();
         produtos.forEach(produto -> {

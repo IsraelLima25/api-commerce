@@ -4,11 +4,11 @@ import br.com.api.commerce.form.dto.PedidoFormDTO;
 import br.com.api.commerce.model.ItemPedido;
 import br.com.api.commerce.model.Pedido;
 import br.com.api.commerce.service.ItemPedidoService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Component

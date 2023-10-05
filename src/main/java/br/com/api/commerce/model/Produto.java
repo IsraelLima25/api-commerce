@@ -72,8 +72,8 @@ public class Produto {
 		}
 	}
 
-	public void abaterEstoque(Integer quantidadeCompra) {
-		this.quantidade--;
+	public void abaterEstoque(Integer quantidadeComprada) {
+		this.quantidade-=quantidadeComprada;
 	}
 
 	public static class Builder {

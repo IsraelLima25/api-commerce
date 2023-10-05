@@ -1,11 +1,13 @@
-package br.com.api.commerce.configurations;
+package br.com.api.commerce.filter;
 
 import br.com.api.commerce.repository.UsuarioRepository;
 import br.com.api.commerce.service.TokenService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +36,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         filterChain.doFilter(request, response);
     }
 
@@ -43,7 +44,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");
         }
-
         return null;
     }
 }

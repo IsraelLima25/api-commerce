@@ -5,7 +5,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.hibernate.validator.constraints.UUID;
 import org.springframework.util.Assert;
 
 import java.util.List;

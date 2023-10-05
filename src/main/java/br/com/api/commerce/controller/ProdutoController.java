@@ -169,5 +169,4 @@ public class ProdutoController {
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		});
 	}
-	
 }

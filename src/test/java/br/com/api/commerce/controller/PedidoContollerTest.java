@@ -7,12 +7,15 @@ import br.com.api.commerce.model.Cliente;
 import br.com.api.commerce.model.Produto;
 import br.com.api.commerce.repository.ClienteRepository;
 import br.com.api.commerce.repository.ProdutoRepository;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,11 +23,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,7 +70,7 @@ class PedidoContollerTest {
     }
 
     @Test
-    @DisplayName("deve fazer pedido com cartão de crédito e retornar status 200")
+    @DisplayName("deve fazer pedido com forma de pagamento cartão de crédito e retornar status 200")
     @WithMockUser
     void deveFazerPedidoPagamentoCartaoCredito() throws Exception{
 
@@ -84,7 +87,7 @@ class PedidoContollerTest {
     @Test
     @DisplayName("Não deve fazer pedido quando cpf do cliente não existir e deve retornar status 400")
     @WithMockUser
-    void naoDeveFazerPedidoQuandoCPFClienteInexistente() throws Exception{
+    void naoDeveFazerPedidoQuandoCPFClienteInexistente() throws Exception {
 
         PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("03375298099", FormaPagamentoIndicador.PIX, listPedidoProdutos);
 
@@ -113,7 +116,7 @@ class PedidoContollerTest {
     }
 
     @Test
-    @DisplayName("Não deve fazer pedido quando id do produto não existir e deve retornar status 400")
+    @DisplayName("Não deve fazer pedido quando id do produto solicitado não existir e deve retornar status 400")
     @WithMockUser
     void naoDeveFazerPedidoQuandoIDProdutosNaoExistir() throws Exception{
 

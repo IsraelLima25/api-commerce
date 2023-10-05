@@ -1,6 +1,8 @@
 package br.com.api.commerce.configurations;
 
 
+import br.com.api.commerce.filter.SecurityFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -60,6 +62,7 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
 
 

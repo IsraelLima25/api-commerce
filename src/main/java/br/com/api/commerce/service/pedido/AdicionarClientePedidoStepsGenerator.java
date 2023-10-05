@@ -6,8 +6,10 @@ import br.com.api.commerce.model.Cliente;
 import br.com.api.commerce.model.Pedido;
 import br.com.api.commerce.service.ClienteService;
 import br.com.api.commerce.utilities.Mask;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
