@@ -7,6 +7,9 @@ import br.com.api.commerce.view.dto.ProdutoViewDTO;
 
 import br.com.api.commerce.exception.NotFoundException;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 import java.net.URI;
@@ -30,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/produtos")
+@SecurityRequirement(name = "bearer-key")
 public class ProdutoController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoController.class);
@@ -39,6 +43,11 @@ public class ProdutoController {
 		this.produtoService = produtoService;
 	}
 
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o produto com id pesquisado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
 	@PostMapping
 	@Transactional
     public ResponseEntity<ProdutoViewDTO> cadastrarProduto(@Valid @RequestBody ProdutoFormDTO formDto, UriComponentsBuilder uriBuilder) {
@@ -54,7 +63,13 @@ public class ProdutoController {
 
         return ResponseEntity.created(uri).body(produtoViewDTO);
     }
-	
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o produto pelo id pesquisado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "404", description = "produto não encontrado"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
 	@GetMapping("/{idProduto}")
 	public ResponseEntity<ProdutoViewDTO> buscarProdutoPorId(@PathVariable("idProduto") UUID idProduto) {
 		
@@ -71,8 +86,12 @@ public class ProdutoController {
 			throw new NotFoundException("idProduto", "Nenhum produto encontrado");
 		});
 	}
-	
-	
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna todos produtos paginado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
 	@GetMapping
 	public ResponseEntity<Page<ProdutoViewDTO>> listarTodosProdutos(
 			@RequestParam(value = "page", required = false, defaultValue = "0") int page, 
@@ -96,7 +115,13 @@ public class ProdutoController {
 		Page<ProdutoViewDTO> pageImplProdutos = new PageImpl<>(todosProdutosView, pageSorted, todosProdutosView.size());
 		return ResponseEntity.ok(pageImplProdutos);
 	}
-	
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Delete o produto por id"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "404", description = "produto não encontrado"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
 	@DeleteMapping("/{idProduto}")
 	@Transactional
 	public ResponseEntity<Void> deletarProduto(@PathVariable("idProduto") UUID idProduto){
@@ -115,7 +140,13 @@ public class ProdutoController {
 		
 		return ResponseEntity.noContent().build();
 	}
-	
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o produto atualizado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "404", description = "produto não encontrado"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
 	@PutMapping("/{idProduto}")
 	@Transactional
 	public ResponseEntity<ProdutoViewDTO> atualizarProduto(@Valid @RequestBody ProdutoFormDTO formDTO, @PathVariable("idProduto") UUID idProduto){

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -67,6 +68,7 @@ class PedidoContollerTest {
 
     @Test
     @DisplayName("deve fazer pedido com cartão de crédito e retornar status 200")
+    @WithMockUser
     void deveFazerPedidoPagamentoCartaoCredito() throws Exception{
 
         PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("66367650032", FormaPagamentoIndicador.CREDITO, listPedidoProdutos);
@@ -81,6 +83,7 @@ class PedidoContollerTest {
 
     @Test
     @DisplayName("Não deve fazer pedido quando cpf do cliente não existir e deve retornar status 400")
+    @WithMockUser
     void naoDeveFazerPedidoQuandoCPFClienteInexistente() throws Exception{
 
         PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("03375298099", FormaPagamentoIndicador.PIX, listPedidoProdutos);
@@ -95,6 +98,7 @@ class PedidoContollerTest {
 
     @Test
     @DisplayName("Não deve fazer pedido quando a quantidade comprada é maior que a quantidade em estoque e deve retornar status 500")
+    @WithMockUser
     void naoDeveFazerPedidoQuandoQuantidadeProdutoCompradoMaiorQueEstoque() throws Exception{
 
         List<PedidoProdutoFormDTO> listPedidoProdutoQuantidadeInvalida = new ArrayList<>();
@@ -110,6 +114,7 @@ class PedidoContollerTest {
 
     @Test
     @DisplayName("Não deve fazer pedido quando id do produto não existir e deve retornar status 400")
+    @WithMockUser
     void naoDeveFazerPedidoQuandoIDProdutosNaoExistir() throws Exception{
 
         UUID idProdutoInexistente = UUID.randomUUID();

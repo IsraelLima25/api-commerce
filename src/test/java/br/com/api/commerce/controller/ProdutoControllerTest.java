@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -63,6 +64,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Deve cadastrar produto e retornar status 201")
+	@WithMockUser
 	void cadastrarProduto() throws Exception {
 		
 		// TODO create builder pattern
@@ -147,6 +149,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Deve deletar produto por id existente e retornar status 404")
+	@WithMockUser
 	void deletarProdutoPorIdExistente() throws Exception {
 		
 		Produto segundoProduto = this.produtosSalvo.get(1);
@@ -160,6 +163,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Não deve deletar produto por id inexistente e retornar status 404")
+	@WithMockUser
 	void deletarProdutoPorIdInexistente() throws Exception {
 		
 		UUID idInvalido = UUID.randomUUID();
@@ -174,6 +178,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Deve atualizar produto por id existente")
+	@WithMockUser
 	void atualizarProdutoPorIdExistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados
@@ -193,6 +198,7 @@ public class ProdutoControllerTest {
 	
 	@Test
 	@DisplayName("Não deve atualizar produto por id inexistente")
+	@WithMockUser
 	void atualizarProdutoPorIdInexistente() throws Exception {
 		
 		// TODO create builder pattern and loadingDados

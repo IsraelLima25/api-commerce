@@ -1,0 +1,1 @@
+INSERT INTO TBL_USUARIO(LOGIN, SENHA) VALUES ('desafio@softplan.com', '$2a$12$lhNzXM4ze6Lj5gy.pnbhWuAB.Y8FokeqPyGI2ZtQdQy2CAuUIcA/i')

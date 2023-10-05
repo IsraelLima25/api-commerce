@@ -3,6 +3,9 @@ package br.com.api.commerce.controller;
 import java.net.URI;
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
@@ -27,6 +30,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/clientes")
+@SecurityRequirement(name = "bearer-key")
 public class ClienteController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClienteController.class);
@@ -36,7 +40,12 @@ public class ClienteController {
     public ClienteController(ClienteService clienteService) {
 		this.clienteService = clienteService;
 	}
-    
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o cliente cadastrado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
     @PostMapping
 	@Transactional
     public ResponseEntity<ClienteViewDTO> cadastrarCliente(@Valid @RequestBody ClienteFormDTO formDto, UriComponentsBuilder uriBuilder) {
@@ -52,7 +61,13 @@ public class ClienteController {
 
         return ResponseEntity.created(uri).body(clienteViewDTO);
     }
-    
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o cliente por cpf pesquisado"),
+			@ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+			@ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+			@ApiResponse(responseCode = "500", description = "Foi gerada uma exceção"),
+	})
     @GetMapping("/{cpf}")
 	public ResponseEntity<ClienteViewDTO> buscarClientePorCpf(@PathVariable("cpf") String cpf) {
 		

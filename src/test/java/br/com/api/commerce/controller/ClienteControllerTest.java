@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -60,6 +61,7 @@ public class ClienteControllerTest {
 	
 	@Test
 	@DisplayName("Deve cadastrar cliente e retornar status 201")
+	@WithMockUser
 	void cadastrarCliente() throws Exception {
 		
 		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "74785966068");
@@ -75,6 +77,7 @@ public class ClienteControllerTest {
 
 	@Test
 	@DisplayName("Não deve cadastrar cliente com cpf repetido e deve retornar status 400")
+	@WithMockUser
 	void naoDeveCadastrarClienteComCPFRepetido() throws Exception {
 
 		ClienteFormDTO clienteFormRequest = new ClienteFormDTO("Roberto", "78067180016");
@@ -87,6 +90,7 @@ public class ClienteControllerTest {
 	
 	@Test
 	@DisplayName("Deve retornar cliente por cpf existente e retornar status 200")
+	@WithMockUser
 	void buscarClientePorCpfExistente() throws Exception {
 
 		Cliente primeiroCliente = this.clientesSalvo.get(0);
@@ -100,6 +104,7 @@ public class ClienteControllerTest {
 	
 	@Test
 	@DisplayName("Não deve retornar cliente com cpf inexistente e retornar status 404")
+	@WithMockUser
 	void buscarProdutoPorCpfInexistente() throws Exception {
 		
 		String cpfInexistente = "56823761024";
