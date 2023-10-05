@@ -8,7 +8,7 @@ Api Restful que simula o fluxo de venda de produtos. Esta API foi documentada co
 
 http://localhost:8080/swagger-ui/index.html
 
-Nesta API os recursos de autenticação do Spring Security foram adicionados. Portanto para acessar a maioria dos recursos exceto a listagem de produtos, é necessário se autenticar. Para se autenticar basta acessar a URI /api/login e capturar um token JWT. Como o objetivo deste artefato é a didática, estamos fornecendo um usuário previamente cadastro em memória para capturar o token e executar os testes, segue as credenciais abaixo:
+Nesta API os recursos de autenticação do Spring Security foram adicionados. Portanto para acessar a maioria dos recursos exceto a listagem de produtos, é necessário se autenticar. Para se autenticar basta acessar a URI /api/login e capturar um token JWT. Como o objetivo deste artefato é a didática, estamos fornecendo um usuário previamente cadastrado em memória para capturar o token e executar os testes, segue a credencial abaixo:
 
 ```bash
 # Credenciais armazenadas em memória
