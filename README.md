@@ -4,9 +4,11 @@
 
 # Sobre o projeto
 
-Api restful que simula o fluxo de venda dos produtos 
+Api Restful que simula o fluxo de venda de produtos. Esta API foi documentada com o swagger, segue link abaixo para acessar os documentos quando a API estiver em execução.
 
 http://localhost:8080/swagger-ui/index.html
+
+Nesta API os recursos de autenticação do Spring Security foram adicionados. Portanto para acessar a maioria dos recursos exceto a listagem de produtos, é necessário se autenticar. Para se autenticar basta acessar a URI /api/login e capturar um token JWT. Como o objetivo deste artefato é a didática, estamos fornecendo um usuário previamente cadastro em memória para capturar o token e executar os testes, segue as credenciais abaixo:
 
 ```bash
 # Credenciais armazenadas em memória
@@ -45,11 +47,11 @@ mvn spring-boot:run
 Pré-requisitos: Docker
 
 ```bash
-# Executar
-docker run -d -p 8080:8080 ilimafilho/apicommerce:1.0.0
-
-Obs: A imagem está armazenada no docker hub registry
+# Executar o comando
+docker run -p 8080:8080 ilimafilho/apicommerce:1.0.0
 ```
+
+Observação: No cenário de execução com docker ficar atento para a definição das portas host/container.
 
 # Autor
 
