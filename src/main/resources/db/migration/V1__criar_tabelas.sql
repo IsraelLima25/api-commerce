@@ -17,7 +17,9 @@ data_hora_local DATETIME NOT NULL,
 status VARCHAR(30) NOT NULL,
 forma_pagamento VARCHAR(30) NOT NULL,
 id_cliente VARCHAR(255) NOT NULL,
-preco_total_itens DECIMAL(8,2) NOT NULL
+valor_total_itens DECIMAL(8,2) NOT NULL,
+taxa DECIMAL(8,2) NOT NULL,
+valor_total_taxado DECIMAL(8,2) NOT NULL
 );
 
 CREATE TABLE tbl_pedido_produto(

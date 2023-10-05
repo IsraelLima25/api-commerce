@@ -74,7 +74,7 @@ public class PedidoService {
 		}).collect(Collectors.toList());
 		
 		PedidoViewDTO viewPedido = new PedidoViewDTO(pedido.getId(),pedido.getCliente().getCpf(),
-				pedido.getInstante(), itensPedido, pedido.getFormaPagamento(), pedido.getValorTotalPedido());
+				pedido.getInstante(), itensPedido, pedido.getFormaPagamento(), pedido.getValorTotalPedido(), pedido.getValorTaxa(), pedido.getValorTotalTaxado());
 		
 		return viewPedido;
 	}

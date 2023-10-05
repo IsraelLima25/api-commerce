@@ -66,16 +66,16 @@ class PedidoContollerTest {
     }
 
     @Test
-    @DisplayName("deve fazer pedido e retornar status 200")
-    void deveFazerPedido() throws Exception{
+    @DisplayName("deve fazer pedido com cartão de crédito e retornar status 200")
+    void deveFazerPedidoPagamentoCartaoCredito() throws Exception{
 
-        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("66367650032", FormaPagamentoIndicador.PIX, listPedidoProdutos);
+        PedidoFormDTO pedidoFormRequest = new PedidoFormDTO("66367650032", FormaPagamentoIndicador.CREDITO, listPedidoProdutos);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/pedidos")
                         .content(json(pedidoFormRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.cpfCliente", is("66367650032")))
-                .andExpect(jsonPath("$.tipoPagamento", is(FormaPagamentoIndicador.PIX.toString())))
+                .andExpect(jsonPath("$.tipoPagamento", is(FormaPagamentoIndicador.CREDITO.toString())))
                 .andExpect(status().isOk());
     }
 

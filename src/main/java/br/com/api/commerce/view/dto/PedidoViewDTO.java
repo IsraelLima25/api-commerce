@@ -13,7 +13,9 @@ public record PedidoViewDTO (
 		LocalDateTime dataPedido, 
 		List<ItemPedidoViewDTO> itensPedido, 
 		FormaPagamentoIndicador tipoPagamento, 
-		BigDecimal valorTotalItens) 
+		BigDecimal valorTotalItens,
+		BigDecimal valorTaxa,
+		BigDecimal valorTotalTaxado)
 { }
 
 

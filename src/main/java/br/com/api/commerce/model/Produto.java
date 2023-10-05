@@ -66,7 +66,6 @@ public class Produto {
 		this.precoUnitario = precoUnitario;
 		this.quantidade = quantidade;
 	}
-
 	public void temEstoque(Integer quantidadeCompra){
 		if(quantidadeCompra > this.quantidade){
 			throw new BusinessException("quantidade", "A quantidade para compra é maior que a quantidade em estoque");

@@ -1,16 +1,14 @@
 package br.com.api.commerce.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import br.com.api.commerce.form.dto.PedidoFormDTO;
-import br.com.api.commerce.form.dto.PedidoProdutoFormDTO;
 import br.com.api.commerce.indicador.FormaPagamentoIndicador;
 import br.com.api.commerce.indicador.StatusPedidoIndicador;
-import br.com.api.commerce.service.ItemPedidoService;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,14 +46,21 @@ public class Pedido {
 	@OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
 	
-	@Column(name = "preco_total_itens", nullable = false)
+	@Column(name = "valor_total_itens", nullable = false)
 	private BigDecimal valorTotalPedido;
+
+	@Column(name = "taxa", nullable = false)
+	private BigDecimal valorTaxa;
+	@Column(name = "valor_total_taxado", nullable = false)
+	private BigDecimal valorTotalTaxado;
 	
 	public Pedido() {
 		this.id = UUID.randomUUID();
 		this.instante = LocalDateTime.now();
 		this.status = StatusPedidoIndicador.AGUARDANDO_PAGAMENTO;
 		this.valorTotalPedido = BigDecimal.ZERO;
+		this.valorTaxa = BigDecimal.ZERO;
+		this.valorTotalTaxado = BigDecimal.ZERO;
 	}
 
 	public UUID getId() {
@@ -82,7 +87,15 @@ public class Pedido {
 	public FormaPagamentoIndicador getFormaPagamento() {
 		return formaPagamento;
 	}
-	
+
+	public BigDecimal getValorTaxa() {
+		return this.getValorTotalPedido().multiply(this.formaPagamento.valorTaxa()).setScale(2, RoundingMode.HALF_UP);
+	}
+
+	public BigDecimal getValorTotalTaxado() {
+		return this.getValorTotalPedido().add(getValorTaxa());
+	}
+
 	public void adicionarItem(ItemPedido item) {
 		this.itens.add(item);
 	}
