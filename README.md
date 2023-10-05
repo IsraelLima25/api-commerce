@@ -12,10 +12,10 @@ Nesta API os recursos de autenticação do Spring Security foram adicionados. Po
 
 ```bash
 # Credenciais armazenada em memória
-email: desafio@softplan.com
+login: desafio@softplan.com
 senha: 123456
 
-# Usar o token retornado na requisição para fazer requisições protegidas.
+# Usar o Bearer token JWT retornado na requisição para fazer requisições que requer autenticação.
 ```
 # Tecnologias utilizadas
 
