@@ -11,7 +11,7 @@ http://localhost:8080/swagger-ui/index.html
 Nesta API os recursos de autenticação do Spring Security foram adicionados. Portanto para acessar a maioria dos recursos exceto a listagem de produtos, é necessário se autenticar. Para se autenticar basta acessar a URI /api/login e capturar um Bearer token JWT. Como o objetivo deste artefato é a didática, estamos fornecendo um usuário previamente cadastrado em memória para capturar o token e executar os testes, segue a credencial abaixo:
 
 ```bash
-# Credenciais armazenadas em memória
+# Credenciais armazenada em memória
 email: desafio@softplan.com
 senha: 123456
 
