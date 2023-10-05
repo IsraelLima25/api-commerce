@@ -29,7 +29,7 @@ public class ItemPedidoService {
 
 	public List<ItemPedido> gerarItensPedido(List<PedidoProdutoFormDTO> produtos, Pedido pedido) {
 		
-		LOGGER.info("Gerando itens para o pedido com id {}", pedido.getId());
+		LOGGER.info("Gerando itens para o pedido com id " + pedido.getId());
 		List<ItemPedido> itens = new ArrayList<>();
 		produtos.stream().forEach(produtoComprado -> {
 			Produto produtoBusca = produtoRepository.findById(produtoComprado.id()).get();
@@ -46,7 +46,7 @@ public class ItemPedidoService {
 	}
 	
 	public void salvarItensPedido(List<ItemPedido> itens) {
-		LOGGER.info("Salvando itens no pedido com id {} na base de dados", itens.get(0).getId().getPedido().getId());
+		LOGGER.info("Salvando itens no pedido com id"+ itens.get(0).getId().getPedido().getId() + "na base de dados");
 		itens.stream().forEach(item -> {
 			itemPedidoRepository.save(item);
 		});

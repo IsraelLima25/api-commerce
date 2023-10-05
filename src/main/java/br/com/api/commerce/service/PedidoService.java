@@ -42,7 +42,7 @@ public class PedidoService {
 		pedidoStepsGenerators.forEach(pedidoStepsGenerator -> {
 			pedidoStepsGenerator.processarStep(pedido, formDTO);
 		});
-
+		LOGGER.info("Pedido codigo " + pedido.getId() + ", gerado com sucesso");
 		pedidoRepository.save(pedido);
 		itemPedidoService.salvarItensPedido(pedido.getItens());
 		return pedido;
