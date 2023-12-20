@@ -28,8 +28,9 @@ senha: 123456
 - H2 Database
 - Maven
 
-## Implantação em produção
-- Amazon EC2
+## Diagrama Arquitetura AWS
+
+![Web 1](https://github.com/IsraelLima25/Assets/blob/63cbd4b4403540dd27db2522a520b482614fc9df/Diagrama.jpg)
 
 # Como executar o projeto no Host
 Pré-requisitos: Maven
